@@ -65,5 +65,6 @@ Reservation.init({
 Reservation.belongsTo(User, { foreignKey: 'userId' })
 Reservation.belongsTo(Room, { foreignKey: 'roomId' })
 
+Reservation.sync();
 
 export { Reservation };

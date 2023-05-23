@@ -16,13 +16,6 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     res.status(401).send();
     return;
   }
-
-  const { userId, username } = jwtPayload;
-  const newToken = jwt.sign({ userId, username }, config.jwtSecret, {
-    expiresIn: "1h"
-  });
-  res.setHeader("token", newToken);
-
   //Call the next middleware or controller
   next();
 };

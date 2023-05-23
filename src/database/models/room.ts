@@ -93,4 +93,6 @@ Room.init({
     timestamps: false
 });
 
+Room.sync();
+
 export { Room };

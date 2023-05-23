@@ -47,4 +47,6 @@ Review.init({
 });
 Review.belongsTo(Reservation, { foreignKey: "reservationId" })
 
+Review.sync();
+
 export { Review };
