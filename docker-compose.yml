@@ -1,41 +1,62 @@
 version: '3.5'
 
 services:
-  postgres:
+  postgres-test:
     container_name: postgres_container
     image: postgres
     environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_DB: web
       PGDATA: /data/postgres
+    hostname: postgres
     volumes:
        - postgres:/data/postgres
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
-      - postgres
+      - testtest
     restart: unless-stopped
-  
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: trunghieubh0102@gmai.com
-      PGADMIN_DEFAULT_PASSWORD: test
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-       - pgadmin:/var/lib/pgadmin
 
+  app: 
+    container_name: webbook
+    image: webbook
+    environment:
+      DB_NAME: web
+      DB_USER_NAME: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+    depends_on:
+      - postgres-test
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - "8080:8080"
     networks:
-      - postgres
-    restart: unless-stopped
+      - testtest
+    restart: always
+
+
+  
+  # pgadmin:
+  #   container_name: pgadmin_container
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: trunghieubh0102@gmai.com
+  #     PGADMIN_DEFAULT_PASSWORD: test
+  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #   volumes:
+  #      - pgadmin:/var/lib/pgadmin
+
+  #   ports:
+  #     - "${PGADMIN_PORT:-5050}:80"
+  #   networks:
+  #     - postgres
+  #   restart: unless-stopped
 
 networks:
-  postgres:
+  testtest:
     driver: bridge
 
 volumes:
     postgres:
-    pgadmin:
