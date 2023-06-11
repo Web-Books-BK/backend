@@ -6,7 +6,7 @@ import { User } from './users';
 class Room extends Model {
     public id!: string;
     public name!: string;
-    public desciption!: string;
+    public description!: string;
     public available!: string;
     public livingRoom!: number;
     public bedroom!: number;
@@ -25,7 +25,7 @@ class Room extends Model {
 
 Room.init({
     id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         defaultValue: () => uuidv4(),
         primaryKey: true
     },
@@ -33,7 +33,7 @@ Room.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    desciption: {
+    description: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -64,7 +64,7 @@ Room.init({
         defaultValue: false,
     },
     images: {
-        type: DataTypes.ARRAY,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true
     },
     price: {
@@ -80,7 +80,7 @@ Room.init({
         allowNull: false,
     },
     owner: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         allowNull: false,
     },
     createAt: {
@@ -99,7 +99,7 @@ Room.init({
     timestamps: false
 });
 
-Room.belongsTo(User, {foreignKey:"onwer"})
+Room.belongsTo(User, {foreignKey:"owner"})
 Room.sync();
 
 export { Room };

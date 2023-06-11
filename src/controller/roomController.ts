@@ -11,13 +11,28 @@ async function getListRoom(req: Request, res: Response) {
     });
     res.status(200).send({ data: rooms });
   } catch (e) {
-    res.status(400).json({ errors: { body: ['Could not get list romm', (e as Error).message] } });
+    res.status(400).json({ errors: { body: ['Could not get list room', (e as Error).message] } });
+  }
+}
+
+async function getRoomDetail(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    const payload = req.body.room;
+    const room = await Room.findByPk(id);
+    if (!room) {
+      throw Error('Room not exist');
+    }
+    return res.status(200).send({ data: room });
+  } catch (e) {
+    res.status(400).json({ errors: { body: ['Could not get room data', (e as Error).message] } });
   }
 }
 
 async function createRoom(req: Request, res: Response) {
   try {
     const payload = req.body.room;
+    console.log(payload);
     const room = await Room.create({
       id: v4(),
       name: payload.name,
@@ -53,9 +68,9 @@ async function updateRoom(req: Request, res: Response) {
     oldRoom.update(
       {
         name: payload.name ? payload.name : oldRoom.name,
-        description: payload.description ? payload.description : oldRoom.desciption,
+        description: payload.description ? payload.description : oldRoom.description,
         available: payload.available ? payload.available : oldRoom.available,
-        livingRoom: payload.livingRoom ? payload.livingRoom : oldRoom.available,
+        livingRoom: payload.livingRoom ? payload.livingRoom : oldRoom.livingRoom,
         bedroom: payload.bedroom ? payload.bedroom : oldRoom.bedroom,
         toilet: payload.toilet ? payload.toilet : oldRoom.toilet,
         wifi: payload.wifi ? payload.wifi : oldRoom.wifi,
@@ -88,4 +103,4 @@ async function deleteRoom(req: Request, res: Response) {
   }
 }
 
-export { getListRoom, createRoom, deleteRoom, updateRoom };
+export { getListRoom, createRoom, deleteRoom, updateRoom , getRoomDetail};
