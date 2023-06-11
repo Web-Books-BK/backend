@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "npx tsc",
-    "start": "node build/app.js",
+    "run": "node build/app.js",
+    "start": "npx tsc && node build/app.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q build/app.js\""
   },
   "devDependencies": {
