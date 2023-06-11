@@ -1,6 +1,7 @@
 import { Room } from '../database/models/room';
 import { Response, Request } from 'express';
 import { v4 } from 'uuid';
+import { CustomRequest } from '../types/customRequest';
 
 async function getListRoom(req: Request, res: Response) {
   try {
@@ -18,7 +19,6 @@ async function getListRoom(req: Request, res: Response) {
 async function getRoomDetail(req: Request, res: Response) {
   try {
     const id = req.params.id;
-    const payload = req.body.room;
     const room = await Room.findByPk(id);
     if (!room) {
       throw Error('Room not exist');
@@ -29,10 +29,10 @@ async function getRoomDetail(req: Request, res: Response) {
   }
 }
 
-async function createRoom(req: Request, res: Response) {
+async function createRoom(req: CustomRequest, res: Response) {
+  const userId = req.userId;
   try {
     const payload = req.body.room;
-    console.log(payload);
     const room = await Room.create({
       id: v4(),
       name: payload.name,
@@ -47,7 +47,7 @@ async function createRoom(req: Request, res: Response) {
       price: payload.price,
       address: payload.address,
       phone: payload.phone,
-      owner: payload.owner,
+      owner: userId,
     });
     if (room) {
       res.status(200).json({ room });
@@ -57,14 +57,14 @@ async function createRoom(req: Request, res: Response) {
   }
 }
 
-async function updateRoom(req: Request, res: Response) {
+async function updateRoom(req: CustomRequest, res: Response) {
+  const userId = req.userId;
   try {
     const id = req.params.id;
     const payload = req.body.room;
     let oldRoom = await Room.findByPk(id);
-    if (!oldRoom) {
-      throw Error('Room not exist');
-    }
+    if (!oldRoom) throw Error('Room not exist');
+    if (userId != oldRoom.owner) throw Error('Authorisation');
     oldRoom.update(
       {
         name: payload.name ? payload.name : oldRoom.name,
@@ -89,18 +89,18 @@ async function updateRoom(req: Request, res: Response) {
   }
 }
 
-async function deleteRoom(req: Request, res: Response) {
+async function deleteRoom(req: CustomRequest, res: Response) {
+  const userId = req.userId;
+  const id = req.params.id;
   try {
-    const id = req.params.id;
-    const room = await Room.destroy({
-      where: {
-        id: id,
-      },
-    });
+    const room = await Room.findByPk(id);
+    if (!room) throw Error("Room not exist")
+    if (userId != room.owner) throw Error('Authorisation');
+    await room.destroy();
     res.status(200).json({ room });
   } catch (e) {
     res.status(400).json({ errors: { body: ['Could not delete room', (e as Error).message] } });
   }
 }
 
-export { getListRoom, createRoom, deleteRoom, updateRoom , getRoomDetail};
+export { getListRoom, createRoom, deleteRoom, updateRoom, getRoomDetail };
