@@ -7,16 +7,16 @@ const sequelizeConnection = new Sequelize(
     process.env.DB_USER_NAME || "default",
     process.env.DB_PASSWORD || "default",
     {
-        host: process.env.HOST || "localhost",
-        port: Number((process.env.PORT || "3306")),
+        host: process.env.DB_HOST || "localhost",
+        port: Number((process.env.DB_PORT || "5432")),
         logging: true,
         dialect: 'postgres',
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
-        }
+        // dialectOptions: {
+        //     ssl: {
+        //         require: true,
+        //         rejectUnauthorized: false
+        //     }
+        // }
     }
 )
 

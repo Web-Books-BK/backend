@@ -17,7 +17,7 @@ class User extends Model {
 
 User.init({
   id: {
-    type: DataTypes.UUIDV4,
+    type: DataTypes.UUID,
     defaultValue: () => uuidv4(),
     primaryKey: true
   },
@@ -64,5 +64,7 @@ User.init({
   modelName: 'User',
   timestamps: false
 });
+
+User.sync();
 
 export { User };

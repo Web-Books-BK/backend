@@ -100,5 +100,6 @@ Room.init({
 });
 
 Room.belongsTo(User, {foreignKey:"onwer"})
+Room.sync();
 
 export { Room };

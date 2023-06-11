@@ -1,7 +1,8 @@
 import { Response, Request, NextFunction, Express } from "express";
-
+import * as jwt from "jsonwebtoken";
 import { User } from "../database/models/users";
-import {matchPassword } from "../utils/hassPassword";
+import { matchPassword } from "../utils/hassPassword";
+import * as config from '../config/config';
 
 export async function login(req: Request, res: Response) {
     try {
@@ -22,7 +23,13 @@ export async function login(req: Request, res: Response) {
         }
 
         delete user.dataValues.password;
-        res.status(200).json({ user })
+        const userID = user.id;
+        const email = user.email;
+        const newToken = jwt.sign({ userID, email }, config.jwtSecret, {
+            expiresIn: "2h"
+        });
+        res.setHeader("token",newToken)
+        res.status(200).json({ success: true, user})
     } catch (err) {
         const status = res.statusCode ? res.statusCode : 500
         res.status(status).json({ errors: { body: ['Could not login ', (<Error>err).message] } })
