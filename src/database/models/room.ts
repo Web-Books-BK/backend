@@ -1,6 +1,7 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { v4 as uuidv4 } from "uuid";
 import { sequelizeConnection } from '../database'
+import { User } from './users';
 
 class Room extends Model {
     public id!: string;
@@ -16,6 +17,7 @@ class Room extends Model {
     public price!: number;
     public address!: string;
     public phone!: string;
+    public owner!: string;
     public readonly createAt!: Date;
     public readonly updateAt!: Date;
 }
@@ -77,6 +79,10 @@ Room.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
+    owner: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     createAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -92,5 +98,7 @@ Room.init({
     modelName: 'Room',
     timestamps: false
 });
+
+Room.belongsTo(User, {foreignKey:"onwer"})
 
 export { Room };
