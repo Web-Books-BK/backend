@@ -28,8 +28,9 @@ export async function login(req: Request, res: Response) {
         const newToken = jwt.sign({ userID, email }, config.jwtSecret, {
             expiresIn: "2h"
         });
-        res.setHeader("token",newToken)
-        res.status(200).json({ success: true, user})
+        res.setHeader("token", newToken)
+        res.setHeader("Access-Control-Expose-Headers", "*")
+        res.status(200).json({ success: true, user })
     } catch (err) {
         const status = res.statusCode ? res.statusCode : 500
         res.status(status).json({ errors: { body: ['Could not login ', (<Error>err).message] } })
