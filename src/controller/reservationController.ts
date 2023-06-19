@@ -33,8 +33,8 @@ async function createReservation(req: CustomRequest, res: Response) {
     if (!room.available) {
       throw Error('Not available');
     }
-    console.log(room)
-    console.log(userId)
+    console.log(room);
+    console.log(userId);
     await room.update(
       {
         available: false,
@@ -71,7 +71,20 @@ async function cancel(req: CustomRequest, res: Response) {
     if (reservation.startDate > Date.now()) {
       throw Error("Can't cancel");
     }
+    if (reservation.endDate - reservation.startDate < 0) {
+      throw Error('Invalid date');
+    }
 
+    await Room.update(
+      {
+        available: false,
+      },
+      {
+        where: {
+          available: true,
+        },
+      }
+    );
     await reservation.destroy();
     res.status(200).json({ reservation });
   } catch (e) {
@@ -79,8 +92,4 @@ async function cancel(req: CustomRequest, res: Response) {
   }
 }
 
-export {
-  cancel,
-  getReservation,
-  createReservation
-}
+export { cancel, getReservation, createReservation };
