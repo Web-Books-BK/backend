@@ -8,8 +8,8 @@ class Reservation extends Model {
     public id!: number;
     public userId!: string;
     public roomId!: string;
-    public startDate!: Date;
-    public endDate!: Date;
+    public startDate!: number;
+    public endDate!: number;
     public price!: number;
     public total!: number;
     public readonly createAt!: Date;
@@ -23,19 +23,19 @@ Reservation.init({
         autoIncrement: true
     },
     userId: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         allowNull: false
     },
     roomId: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         allowNull: false
     },
     startDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     endDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     price: {
@@ -58,7 +58,7 @@ Reservation.init({
     }
 }, {
     sequelize: sequelizeConnection,
-    modelName: 'User',
+    modelName: 'Reservation',
     timestamps: false
 });
 

@@ -5,12 +5,24 @@ import { CustomRequest } from '../types/customRequest';
 
 async function getListRoom(req: Request, res: Response) {
   try {
-    let { limit = '20', offset = '0' } = req.query;
-    const rooms = await Room.findAll({
-      limit: parseInt(limit as string),
-      offset: parseInt(offset as string),
-    });
-    res.status(200).send({ data: rooms });
+    let { limit = '20', offset = '0', owner } = req.query;
+    if (!owner) {
+      const rooms = await Room.findAll({
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string),
+      });
+      res.status(200).send({ data: rooms });
+    } else {
+      const rooms = await Room.findAll({
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string),
+        where: {
+          owner: owner,
+        }
+      });
+      res.status(200).send({ data: rooms });
+
+    }
   } catch (e) {
     res.status(400).json({ errors: { body: ['Could not get list room', (e as Error).message] } });
   }
@@ -94,7 +106,7 @@ async function deleteRoom(req: CustomRequest, res: Response) {
   const id = req.params.id;
   try {
     const room = await Room.findByPk(id);
-    if (!room) throw Error("Room not exist")
+    if (!room) throw Error('Room not exist');
     if (userId != room.owner) throw Error('Authorisation');
     await room.destroy();
     res.status(200).json({ room });
