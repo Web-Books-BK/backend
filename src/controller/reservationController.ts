@@ -77,11 +77,11 @@ async function cancel(req: CustomRequest, res: Response) {
 
     await Room.update(
       {
-        available: false,
+        available: true,
       },
       {
         where: {
-          available: true,
+          id: reservation.roomId,
         },
       }
     );
