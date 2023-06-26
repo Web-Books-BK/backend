@@ -5,13 +5,24 @@ import { CustomRequest } from '../types/customRequest';
 
 async function getListRoom(req: Request, res: Response) {
   try {
-    let { limit = '20', offset = '0', owner } = req.query;
+    let { limit = '20', offset = '0', owner, category } = req.query;
     if (!owner) {
-      const rooms = await Room.findAll({
-        limit: parseInt(limit as string),
-        offset: parseInt(offset as string),
-      });
-      res.status(200).send({ data: rooms });
+      if (category) {
+        const rooms = await Room.findAll({
+          limit: parseInt(limit as string),
+          offset: parseInt(offset as string),
+          where: {
+            category: category
+          }
+        });
+        res.status(200).send({ data: rooms });
+      } else {
+        const rooms = await Room.findAll({
+          limit: parseInt(limit as string),
+          offset: parseInt(offset as string),
+        });
+        res.status(200).send({ data: rooms });
+      }
     } else {
       const rooms = await Room.findAll({
         limit: parseInt(limit as string),
@@ -50,6 +61,7 @@ async function createRoom(req: CustomRequest, res: Response) {
       name: payload.name,
       description: payload.description,
       available: payload.available,
+      category: payload.category,
       livingRoom: payload.livingRoom,
       bedroom: payload.bedroom,
       toilet: payload.toilet,
@@ -82,6 +94,7 @@ async function updateRoom(req: CustomRequest, res: Response) {
         name: payload.name ? payload.name : oldRoom.name,
         description: payload.description ? payload.description : oldRoom.description,
         available: payload.available ? payload.available : oldRoom.available,
+        category: payload.category ? payload.category : oldRoom.category,
         livingRoom: payload.livingRoom ? payload.livingRoom : oldRoom.livingRoom,
         bedroom: payload.bedroom ? payload.bedroom : oldRoom.bedroom,
         toilet: payload.toilet ? payload.toilet : oldRoom.toilet,

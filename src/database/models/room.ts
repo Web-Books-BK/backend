@@ -8,6 +8,7 @@ class Room extends Model {
     public name!: string;
     public description!: string;
     public available!: string;
+    public category!: string;
     public livingRoom!: number;
     public bedroom!: number;
     public toilet!: number;
@@ -39,6 +40,10 @@ Room.init({
     },
     available: {
         type: DataTypes.BOOLEAN,
+        allowNull: false
+    },
+    category: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     livingRoom: {

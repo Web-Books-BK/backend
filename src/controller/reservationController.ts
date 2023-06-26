@@ -41,12 +41,14 @@ async function createReservation(req: CustomRequest, res: Response) {
       },
       { where: { id: room.id } }
     );
+    const day = Math.floor((payload.endDate - payload.startDate) / 86400);
     const reservation = await Reservation.create({
       userId: userId,
       roomId: room.id,
       startDate: payload.startDate,
       endDate: payload.endDate,
       price: room.price,
+      total: room.price * day,
     });
 
     if (reservation) {

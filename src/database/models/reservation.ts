@@ -43,7 +43,7 @@ Reservation.init({
         allowNull: false
     },
     total: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DECIMAL,
         defaultValue: 0
     },
     createAt: {
